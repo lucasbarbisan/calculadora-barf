@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Ración BARF — Método BARF</title>
+  <meta name="description" content="Calculá la ración diaria de tu perro o gato con el método BARF. Gratis y fácil." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #F4F7F4;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem 4rem;
+      color: #1a1a1a;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 2rem 1.75rem;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 0.25rem;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: #1B5E20;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .brand-name {
+      font-size: 16px;
+      font-weight: 500;
+      color: #1B5E20;
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 1.75rem;
+      padding-left: 46px;
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 10px;
+    }
+
+    .input-block { margin-bottom: 1.5rem; }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 11px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: center;
+      background: #fff;
+      color: #888;
+      transition: all 0.18s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .tab.active {
+      background: #1B5E20;
+      color: #fff;
+      border-color: #1B5E20;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    input[type=range] {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 4px;
+      border-radius: 4px;
+      background: #e0e0e0;
+      outline: none;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #1B5E20;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(27,94,32,0.3);
+    }
+
+    .weight-display {
+      font-size: 30px;
+      font-weight: 500;
+      color: #1a1a1a;
+      min-width: 52px;
+      text-align: right;
+    }
+
+    .weight-unit {
+      font-size: 14px;
+      color: #999;
+    }
+
+    .stage-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    .stage-btn {
+      padding: 10px 6px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 12px;
+      cursor: pointer;
+      background: #fff;
+      color: #888;
+      transition: all 0.18s;
+      text-align: center;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .stage-btn .sub {
+      font-size: 10px;
+      margin-top: 3px;
+      opacity: 0.7;
+    }
+
+    .stage-btn.active {
+      background: #E8F5E9;
+      border-color: #2E7D32;
+      color: #1B5E20;
+      font-weight: 500;
+    }
+
+    .result-card {
+      background: #F4F7F4;
+      border-radius: 16px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .result-main {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .result-grams {
+      font-size: 48px;
+      font-weight: 500;
+      color: #1B5E20;
+      line-height: 1;
+    }
+
+    .result-unit {
+      font-size: 15px;
+      color: #666;
+    }
+
+    .result-sub {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 1.25rem;
+    }
+
+    .divider {
+      height: 1px;
+      background: #e8ede8;
+      margin: 1rem 0;
+    }
+
+    .breakdown {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 0.75rem;
+    }
+
+    .breakdown-item {
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px 12px;
+      border: 1px solid #e8ede8;
+    }
+
+    .breakdown-name {
+      font-size: 11px;
+      color: #999;
+      margin-bottom: 4px;
+    }
+
+    .breakdown-val {
+      font-size: 18px;
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+
+    .breakdown-pct {
+      font-size: 11px;
+      color: #bbb;
+    }
+
+    .calc-note {
+      font-size: 11px;
+      color: #999;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    .pack-section { margin-top: 1.25rem; }
+
+    .pack-card {
+      border: 1.5px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      background: #fff;
+      transition: border-color 0.15s;
+    }
+
+    .pack-card.recommended {
+      border-color: #2E7D32;
+      background: #F9FDF9;
+    }
+
+    .pack-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1a1a1a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pack-desc {
+      font-size: 11px;
+      color: #999;
+      margin-top: 3px;
+    }
+
+    .pack-badge {
+      font-size: 10px;
+      font-weight: 500;
+      background: #E8F5E9;
+      color: #1B5E20;
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+
+    .cta-btn {
+      width: 100%;
+      margin-top: 1.5rem;
+      padding: 15px;
+      background: #1B5E20;
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.18s;
+      font-family: 'DM Sans', sans-serif;
+      letter-spacing: 0.01em;
+    }
+
+    .cta-btn:hover { background: #2E7D32; }
+
+    .footer-note {
+      font-size: 11px;
+      color: #bbb;
+      line-height: 1.7;
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+
+    @media (max-width: 420px) {
+      .card { padding: 1.5rem 1.25rem; }
+      .result-grams { font-size: 40px; }
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+
+  <div class="brand">
+    <div class="brand-icon">🐾</div>
+    <span class="brand-name">Método BARF</span>
+  </div>
+  <div class="brand-sub">Calculadora de ración diaria</div>
+
+  <div class="input-block">
+    <div class="section-label">Tipo de mascota</div>
+    <div class="tabs">
+      <button class="tab active" id="tab-perro" onclick="setTipo('perro')">🐶 Perro</button>
+      <button class="tab" id="tab-gato" onclick="setTipo('gato')">🐱 Gato</button>
+    </div>
+  </div>
+
+  <div class="input-block">
+    <div class="section-label">Peso de tu mascota</div>
+    <div class="slider-row">
+      <input type="range" min="0.5" max="60" step="0.5" value="10" id="peso-slider" oninput="updateCalc()" />
+      <div><span class="weight-display" id="peso-display">10</span><span class="weight-unit"> kg</span></div>
+    </div>
+  </div>
+
+  <div class="input-block">
+    <div class="section-label">Etapa de vida</div>
+    <div class="stage-grid" id="etapa-grid"></div>
+  </div>
+
+  <div class="result-card">
+    <div class="section-label">Ración diaria recomendada</div>
+    <div class="result-main">
+      <span class="result-grams" id="result-grams">250</span>
+      <span class="result-unit">gramos / día</span>
+    </div>
+    <div class="result-sub" id="result-sub"></div>
+    <div class="divider"></div>
+    <div class="section-label">Composición sugerida</div>
+    <div class="breakdown" id="breakdown"></div>
+    <div class="calc-note" id="comp-note"></div>
+  </div>
+
+  <div class="pack-section">
+    <div class="section-label">Packs disponibles</div>
+    <div id="packs-list"></div>
+  </div>
+
+  <button class="cta-btn" onclick="window.open('https://wa.me/5493513152146?text=Hola!%20Quiero%20hacer%20un%20pedido%20de%20BARF%20para%20mi%20mascota%20🐾','_blank')">
+    Consultar y pedir por WhatsApp
+  </button>
+
+  <div class="footer-note">
+    Los valores son orientativos según el método BARF.<br>
+    Ajustá la cantidad según el peso ideal, actividad física y respuesta de tu mascota.<br>
+    Ante dudas, consultá con un veterinario.
+  </div>
+
+</div>
+
+<script>
+  var tipo = 'perro';
+  var etapa = 'adulto';
+
+  var etapas = {
+    perro: [
+      { key: 'cachorro', label: 'Cachorro', sub: '< 1 año', pct: 0.08 },
+      { key: 'adulto', label: 'Adulto activo', sub: '1-7 años', pct: 0.025 },
+      { key: 'senior', label: 'Senior', sub: '> 7 años', pct: 0.02 },
+    ],
+    gato: [
+      { key: 'cachorro', label: 'Gatito', sub: '< 1 año', pct: 0.08 },
+      { key: 'adulto', label: 'Adulto', sub: '1-10 años', pct: 0.03 },
+      { key: 'senior', label: 'Senior', sub: '> 10 años', pct: 0.025 },
+    ]
+  };
+
+  var composicion = {
+    perro: [
+      { name: 'Huesos carnosos*', pct: 0.50 },
+      { name: 'Carne muscular', pct: 0.30 },
+      { name: 'Vísceras', pct: 0.10 },
+      { name: 'Vegetales', pct: 0.10 },
+    ],
+    gato: [
+      { name: 'Huesos carnosos*', pct: 0.50 },
+      { name: 'Carne muscular', pct: 0.35 },
+      { name: 'Vísceras', pct: 0.10 },
+      { name: 'Verduras', pct: 0.05 },
+    ]
+  };
+
+  var notas = {
+    perro: '* Los huesos carnosos aportan mayor contenido de calcio natural.',
+    gato: '* Los huesos carnosos aportan mayor contenido de calcio natural.'
+  };
+
+  var packs = [
+    { name: 'Pack 300g', grams: 300 },
+    { name: 'Pack 500g', grams: 500 },
+    { name: 'Pack 1kg', grams: 1000 },
+  ];
+
+  function setTipo(t) {
+    tipo = t;
+    etapa = 'adulto';
+    document.getElementById('tab-perro').className = 'tab' + (t === 'perro' ? ' active' : '');
+    document.getElementById('tab-gato').className = 'tab' + (t === 'gato' ? ' active' : '');
+    renderEtapas();
+    updateCalc();
+  }
+
+  function renderEtapas() {
+    var grid = document.getElementById('etapa-grid');
+    grid.innerHTML = '';
+    etapas[tipo].forEach(function(e) {
+      var btn = document.createElement('button');
+      btn.className = 'stage-btn' + (e.key === etapa ? ' active' : '');
+      btn.innerHTML = '<div>' + e.label + '</div><div class="sub">' + e.sub + '</div>';
+      btn.onclick = (function(k) { return function() { etapa = k; renderEtapas(); updateCalc(); }; })(e.key);
+      grid.appendChild(btn);
+    });
+  }
+
+  function updateCalc() {
+    var peso = parseFloat(document.getElementById('peso-slider').value);
+    document.getElementById('peso-display').textContent = peso % 1 === 0 ? peso : peso.toFixed(1);
+    var etapaData = etapas[tipo].find(function(e) { return e.key === etapa; });
+    var pct = etapaData ? etapaData.pct : 0.025;
+    var gramos = Math.round(peso * 1000 * pct);
+    document.getElementById('result-grams').textContent = gramos;
+    var comidas = tipo === 'gato' ? 3 : 2;
+    var porComida = Math.round(gramos / comidas);
+    document.getElementById('result-sub').textContent = comidas + ' comidas de ' + porComida + 'g aprox. por día';
+    renderBreakdown(gramos);
+    renderPacks(gramos);
+    document.getElementById('comp-note').textContent = notas[tipo];
+  }
+
+  function renderBreakdown(gramos) {
+    var html = '';
+    composicion[tipo].forEach(function(c) {
+      var g = Math.round(gramos * c.pct);
+      html += '<div class="breakdown-item">';
+      html += '<div class="breakdown-name">' + c.name + '</div>';
+      html += '<div class="breakdown-val">' + g + 'g</div>';
+      html += '<div class="breakdown-pct">' + Math.round(c.pct * 100) + '% de la ración</div>';
+      html += '</div>';
+    });
+    document.getElementById('breakdown').innerHTML = html;
+  }
+
+  function renderPacks(gramosdia) {
+    var gramossemana = gramosdia * 7;
+    var html = '';
+    packs.forEach(function(p) {
+      var unidades = Math.ceil(gramossemana / p.grams);
+      var rec = (p.grams >= gramosdia && p.grams <= gramosdia * 4);
+      html += '<div class="pack-card' + (rec ? ' recommended' : '') + '">';
+      html += '<div><div class="pack-name">' + p.name + (rec ? ' <span class="pack-badge">Recomendado</span>' : '') + '</div>';
+      html += '<div class="pack-desc">' + unidades + ' unidad' + (unidades > 1 ? 'es' : '') + ' por semana</div></div>';
+      html += '</div>';
+    });
+    document.getElementById('packs-list').innerHTML = html;
+  }
+
+  renderEtapas();
+  updateCalc();
+</script>
+</body>
+</html>
